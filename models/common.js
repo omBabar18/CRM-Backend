@@ -7,6 +7,8 @@ function withCode(schema) {
       delete ret._id
       delete ret.__v
       delete ret.password
+      delete ret.verifyToken
+      delete ret.verifyExpires
       return ret
     },
   })

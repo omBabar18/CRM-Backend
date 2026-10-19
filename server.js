@@ -1,4 +1,5 @@
 require('dotenv').config()
+
 const app = require('./app')
 const { connectDb } = require('./config/db')
 const { seedIfEmpty } = require('./services/seed')
@@ -12,6 +13,11 @@ connectDb()
   })
   .catch((error) => {
     console.error('Could not start the API')
-    console.error(error.message)
+    if (/authentication failed|bad auth/i.test(error.message)) {
+      console.error('MongoDB rejected the username or password in MONGO_URI.')
+      console.error('In Atlas, open Database Access, reset the password for this database user, and paste that password into MONGO_URI between the colon and the @. Leave no spaces.')
+    } else {
+      console.error(error.message)
+    }
     process.exit(1)
   })
