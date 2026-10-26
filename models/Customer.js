@@ -15,6 +15,8 @@ const customerSchema = new mongoose.Schema({
     status: { type: String, default: 'Pending' },
     aadhaar: { type: String, default: '' },
     pan: { type: String, default: '' },
+    idProof: { type: String, default: '' },
+    idNumber: { type: String, default: '' },
   },
   notes: [{
     id: String,

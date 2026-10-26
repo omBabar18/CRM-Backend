@@ -37,7 +37,12 @@ function sensitive(user) {
 function presentCustomer(customer, user) {
   const json = customer.toJSON()
   if (!sensitive(user) && json.kyc) {
-    json.kyc = { ...json.kyc, aadhaar: json.kyc.aadhaar ? 'XXXX-XXXX-XXXX' : '', pan: json.kyc.pan ? '**********' : '' }
+    json.kyc = {
+      ...json.kyc,
+      aadhaar: json.kyc.aadhaar ? 'XXXX-XXXX-XXXX' : '',
+      pan: json.kyc.pan ? '**********' : '',
+      idNumber: json.kyc.idNumber ? '**********' : '',
+    }
   }
   return json
 }

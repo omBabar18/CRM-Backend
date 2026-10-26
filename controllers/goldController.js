@@ -12,14 +12,18 @@ async function createPurchase(req, res) {
   const net = Number(req.body.netWeight) || 0
   const rate = Number(req.body.rate) || 0
   const deduction = Number(req.body.deduction) || 0
+  const other = Number(req.body.otherDeduction) || 0
+  const advance = Number(req.body.advance) || 0
+  const adjustment = Number(req.body.adjustment) || 0
   const grossValue = Math.round(net * rate)
   const row = await Purchase.create({
     ...req.body,
     code: await nextCode(Purchase, 'DG-GP-'),
     staffId: req.body.staffId || req.user.code,
     date: req.body.date || new Date(),
+    stoneDeduct: req.body.stoneDeduct === '' || req.body.stoneDeduct == null ? null : Number(req.body.stoneDeduct),
     grossValue,
-    finalPayable: grossValue - deduction,
+    finalPayable: Math.max(0, grossValue - deduction - other - advance + adjustment),
   })
   res.status(201).json(row)
 }

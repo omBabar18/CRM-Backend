@@ -13,6 +13,7 @@ const workspaceSchema = new mongoose.Schema({
   settings: {
     reviewLink: { type: String, default: '' },
     city: { type: String, default: 'Sangli, Maharashtra' },
+    receipt: { type: mongoose.Schema.Types.Mixed, default: {} },
   },
 }, { timestamps: true })
 

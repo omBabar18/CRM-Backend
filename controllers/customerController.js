@@ -1,5 +1,5 @@
 const Customer = require('../models/Customer')
-const { seesAll, presentCustomer, nextCode } = require('../services/access')
+const { seesAll, sensitive, presentCustomer, nextCode } = require('../services/access')
 
 function scope(user) {
   return seesAll(user) ? {} : { assignedTo: user.code }
@@ -32,7 +32,7 @@ async function create(req, res) {
 async function update(req, res) {
   const row = await Customer.findOne({ code: req.params.id, ...scope(req.user) })
   if (!row) return res.status(404).json({ message: 'Customer not found' })
-  if (req.body.kyc && !['Admin', 'Manager', 'Accountant'].includes(req.user.role)) delete req.body.kyc
+  if (req.body.kyc && !sensitive(req.user)) delete req.body.kyc
   Object.assign(row, req.body)
   await row.save()
   res.json(presentCustomer(row, req.user))

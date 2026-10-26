@@ -76,4 +76,20 @@ async function toggleAutomation(req, res) {
   res.json(doc.automations)
 }
 
-module.exports = { listStaff, createStaff, updateStaff, removeStaff, getWorkspace, updateRates, updateTargets, toggleAutomation }
+async function updateReceipt(req, res) {
+  if (!can(req.user, 'manageStaff')) return res.status(403).json({ message: 'Your role cannot open this module' })
+  const receipt = req.body && typeof req.body === 'object' ? req.body : {}
+  if (typeof receipt.headerImage === 'string' && receipt.headerImage.length > 1500000) {
+    return res.status(400).json({ message: 'Header photo is too large' })
+  }
+  const doc = await workspace()
+  if (!doc) return res.status(404).json({ message: 'Workspace not found' })
+  const current = doc.settings?.receipt && typeof doc.settings.receipt === 'object' ? doc.settings.receipt : {}
+  doc.settings.receipt = { ...current, ...receipt }
+  if (receipt.address) doc.settings.city = receipt.address
+  doc.markModified('settings')
+  await doc.save()
+  res.json(doc.settings)
+}
+
+module.exports = { listStaff, createStaff, updateStaff, removeStaff, getWorkspace, updateRates, updateTargets, toggleAutomation, updateReceipt }
